@@ -1,0 +1,77 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #5660a5cb;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: #eed963;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(248, 246, 246, 0.1);
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    .weather-info {
+      margin-top: 20px;
+    }
+
+    .error-message {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Weather App</h2>
+    <input type="text" id="cityInput" placeholder="Enter city name">
+    <button onclick="getWeather()">Get Weather</button>
+    <div id="weatherInfo" class="weather-info"></div>
+    <div id="errorMessage" class="error-message"></div>
+  </div>
+
+  <script>
+    function getWeather() {
+      var apiKey = 'bd5e378503939ddaee76f12ad7a97608';
+      var city = document.getElementById('cityInput').value;
+
+      fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.cod === 200) {
+            var weatherInfo = `
+              <p><strong>City:</strong> ${data.name}, ${data.sys.country}</p>
+              <p><strong>Temperature:</strong> ${data.main.temp} °C</p>
+              <p><strong>Weather:</strong> ${data.weather[0].description}</p>
+            `;
+            document.getElementById('weatherInfo').innerHTML = weatherInfo;
+            document.getElementById('errorMessage').innerHTML = '';
+          } else {
+            document.getElementById('weatherInfo').innerHTML = '';
+            document.getElementById('errorMessage').innerHTML = `Error: ${data.message}`;
+          }
+        })
+        .catch(error => {
+          document.getElementById('weatherInfo').innerHTML = '';
+          document.getElementById('errorMessage').innerHTML = `Error: ${error.message}`;
+        });
+    }
+  </script>
+</body>
+</html>
